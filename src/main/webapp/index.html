@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WEB Lab4 — Вход</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div id="app" class="page">
+  <header>
+    <div class="brand">
+      <strong>WEB Lab4</strong>
+      <span class="muted">Стартовая страница</span>
+    </div>
+    <div class="info-grid">
+      <div class="info-tile">ФИО: <strong>Шубин Егор Вячеславович</strong></div>
+      <div class="info-tile">Группа: <strong>P3209</strong></div>
+      <div class="info-tile">Вариант: <strong>98</strong></div>
+    </div>
+  </header>
+
+  <div class="login-wrapper card">
+    <div class="auth-tabs">
+      <button 
+        class="tab-btn" 
+        :class="{ active: !isRegisterMode }"
+        @click="isRegisterMode = false"
+      >
+        Вход
+      </button>
+      <button 
+        class="tab-btn" 
+        :class="{ active: isRegisterMode }"
+        @click="isRegisterMode = true"
+      >
+        Регистрация
+      </button>
+    </div>
+
+    <h2>{{ isRegisterMode ? 'Регистрация' : 'Вход в систему' }}</h2>
+    <p class="muted">
+      {{ isRegisterMode 
+        ? 'Создайте новый аккаунт для доступа к приложению' 
+        : 'Доступ к основной странице только для авторизованных пользователей.' 
+      }}
+    </p>
+
+    <div class="errors" v-if="errors.length">
+      <div class="err" v-for="err in errors" :key="err">{{ err }}</div>
+    </div>
+    <div class="success" v-if="successMessage">{{ successMessage }}</div>
+
+    <!-- Форма входа -->
+    <form v-if="!isRegisterMode" @submit.prevent="submitLogin">
+      <div class="field">
+        <label for="username">Имя пользователя</label>
+        <input id="username" type="text" v-model="username" autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="password">Пароль</label>
+        <input id="password" type="password" v-model="password" autocomplete="current-password">
+      </div>
+      <div class="actions">
+        <button class="btn primary" type="submit" :disabled="loading">
+          {{ loading ? 'Входим...' : 'Войти' }}
+        </button>
+      </div>
+    </form>
+
+    <form v-if="isRegisterMode" @submit.prevent="submitRegister">
+      <div class="field">
+        <label for="reg-username">Имя пользователя</label>
+        <input id="reg-username" type="text" v-model="regUsername" autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="reg-password">Пароль</label>
+        <input id="reg-password" type="password" v-model="regPassword" autocomplete="new-password" placeholder="Минимум 4 символа">
+      </div>
+      <div class="field">
+        <label for="reg-password-confirm">Подтверждение пароля</label>
+        <input id="reg-password-confirm" type="password" v-model="regPasswordConfirm" autocomplete="new-password" placeholder="Повторите пароль">
+      </div>
+      <div class="actions">
+        <button class="btn primary" type="submit" :disabled="loading">
+          {{ loading ? 'Регистрируем...' : 'Зарегистрироваться' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="assets/login.js"></script>
+</body>
+</html>
+
+

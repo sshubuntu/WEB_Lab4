@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WEB Lab4 — Основная страница</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div id="app" class="page" v-cloak>
+  <header>
+    <div class="brand">
+      <strong>WEB Lab4</strong>
+      <span class="muted">Проверка попадания точки</span>
+    </div>
+    <div class="info-grid">
+      <div class="info-tile">ФИО: <strong>Шубин Егор Вячеславович</strong></div>
+      <div class="info-tile">Группа: <strong>P3209</strong></div>
+      <div class="info-tile">Вариант: <strong>98</strong></div>
+    </div>
+    <div class="header-actions">
+      <a class="logout" href="#" @click.prevent="logout">⎋ Выйти</a>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="card inputs">
+      <div class="flex-between">
+        <h2>Параметры точки</h2>
+        <div class="actions">
+          <button class="btn secondary" @click="reloadResults" :disabled="loading">Обновить</button>
+        </div>
+      </div>
+
+      <div class="errors" v-if="errors.length">
+        <div class="err" v-for="err in errors" :key="err">{{ err }}</div>
+      </div>
+
+      <div class="field">
+        <label>Координата X:</label>
+        <div class="row">
+          <label v-for="value in allowedX" :key="'x-' + value">
+            <input class="radio-pill" type="radio" name="x" :value="value" v-model.number="selectedX">
+            {{ value }}
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="y">Координата Y (текст, -3 ... 3):</label>
+        <input id="y" type="text" inputmode="decimal" v-model="yInput" placeholder="-3 ... 3">
+      </div>
+
+      <div class="field">
+        <label>Радиус R:</label>
+        <div class="row">
+          <label v-for="value in allowedR" :key="'r-' + value">
+            <input class="radio-pill" type="radio" name="r" :value="value" v-model.number="selectedR">
+            {{ value }}
+          </label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" @click="submit" :disabled="loading">Проверить</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex-between">
+        <h2>Область</h2>
+        <div class="legend">
+          <span><span class="dot" style="background:#60a5fa"></span>Область</span>
+          <span><span class="dot" style="background:#22c55e"></span>Попадание</span>
+          <span><span class="dot" style="background:#ef4444"></span>Промах</span>
+        </div>
+      </div>
+      <div class="canvas-box">
+        <canvas ref="canvas" @click="handleCanvasClick"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 18px;">
+    <div class="flex-between">
+      <h2>История проверок</h2>
+      <div class="actions">
+        <span class="muted">{{ filteredResults.length }} результатов для выбранного R</span>
+        <button class="btn danger" @click="deleteAllResults" :disabled="loading || !results.length">Удалить все</button>
+      </div>
+    </div>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Время</th>
+        <th>X</th>
+        <th>Y</th>
+        <th>R</th>
+        <th>Попадание</th>
+        <th>Действия</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="item in filteredResults" :key="item.id || (item.creationTime + item.x + item.y)">
+        <td>{{ item.creationTime }}</td>
+        <td>{{ item.x }}</td>
+        <td>{{ item.y }}</td>
+        <td>{{ item.r }}</td>
+        <td><span class="badge" :class="{'fail': !item.hit}">{{ item.hit ? 'Да' : 'Нет' }}</span></td>
+        <td>
+          <button class="btn danger" style="padding: 6px 12px; font-size: 13px;" @click="deleteResult(item.id)" :disabled="loading">Удалить</button>
+        </td>
+      </tr>
+      <tr v-if="!filteredResults.length">
+        <td colspan="6" class="muted">Нет результатов для выбранного R.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
+
+
+
+

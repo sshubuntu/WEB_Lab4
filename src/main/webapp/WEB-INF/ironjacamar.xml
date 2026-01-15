@@ -8,12 +8,11 @@
                 pool-name="PointsDS"
                 enabled="true"
                 use-java-context="true">
-        <connection-url>jdbc:postgresql://${db.host:${env.DB_HOST:localhost}}:${db.port:${env.DB_PORT:5432}}/${db.name:${env.DB_NAME:points}}</connection-url>
-        <driver-class>org.postgresql.Driver</driver-class>
+        <connection-url>jdbc:postgresql://${db.host}:${db.port}/${db.name}</connection-url>
         <driver>postgresql</driver>
         <security>
-            <user-name>${db.user:${env.DB_USER:postgres}}</user-name>
-            <password>${db.pass:${env.DB_PASS:postgres}}</password>
+            <user-name>${db.user}</user-name>
+            <password>${db.pass}</password>
         </security>
         <validation>
             <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
@@ -22,4 +21,3 @@
         </validation>
     </datasource>
 </datasources>
-

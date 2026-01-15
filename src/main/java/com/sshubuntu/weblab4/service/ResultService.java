@@ -59,7 +59,6 @@ public class ResultService {
 
         if (Double.isNaN(r) || Double.isInfinite(r)) throw new InvalidPointException("Введите R");
         if (!ALLOWED_R.contains(r)) throw new InvalidPointException("R должен быть одним из {-3..5}");
-        if (r <= 0) throw new InvalidPointException("Радиус должен быть положительным");
     }
 
     @Transactional

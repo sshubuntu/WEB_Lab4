@@ -1,19 +1,32 @@
+
+
 plugins {
     id 'java'
     id 'war'
+    id 'maven-publish'
 }
 
 group = 'com.sshubuntu'
-version = '1.0.0'
+version = '1.0.1'
+
+def nexusUsername = project.findProperty('NEXUS_USERNAME')
+def nexusPassword = project.findProperty('NEXUS_PASSWORD')
+
+repositories {
+    maven {
+        url 'http://213.171.26.124:8081/repository/maven-public/'
+        allowInsecureProtocol = true
+        credentials {
+            username = nexusUsername
+            password = nexusPassword
+        }
+    }
+}
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 configurations {
@@ -31,6 +44,9 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+    options.release = 17
 }
 
 tasks.withType(Test).configureEach {
@@ -39,9 +55,44 @@ tasks.withType(Test).configureEach {
 
 war {
     archiveFileName = 'WEB_Lab4.war'
-    destinationDirectory = file('wildfly-37.0.1.Final/standalone/deployments')
+    destinationDirectory = file('wildfly-37.0.1.Final/wildfly-37.0.1.Final/standalone/deployments')
 }
 
+publishing {
+    publications {
+        webApp(MavenPublication) {
+            from components.web
+            groupId = 'com.sshubuntu'
+            artifactId = 'web-lab4'
+            version = version
 
+            pom {
+                name = 'WEB Lab 4'
+                description = 'Web application for university lab work'
+                url = 'http://localhost:8080/WEB_Lab4/'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                    }
+                }
+            }
+        }
+    }
 
+    repositories {
+        maven {
+            def repoUrl = version.endsWith('SNAPSHOT') ?
+                    'http://213.171.26.124:8081/repository/maven-snapshots/' :
+                    'http://213.171.26.124:8081/repository/maven-releases/'
+
+            url = repoUrl
+            allowInsecureProtocol = true
+
+            credentials {
+                username = nexusUsername
+                password = nexusPassword
+            }
+        }
+    }
+}
 

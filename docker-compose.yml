@@ -1,5 +1,4 @@
 services:
-
   postgres:
     image: postgres:16
     restart: always
@@ -15,6 +14,32 @@ services:
       - db_data:/var/lib/postgresql/data
     networks:
       - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  wildfly:
+    build: .
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    networks:
+      - backend
+
 
 volumes:
   db_data:
@@ -22,5 +47,4 @@ volumes:
 networks:
   backend:
     driver: bridge
-    name: web-lab4
-
+    name: web-lab4-net

@@ -38,6 +38,13 @@ public class AuthResource {
     @POST
     @Path("/login")
     public Response login(LoginRequest payload) {
+        Optional<UserAccount> loggedInUser = currentUser();
+        if (loggedInUser.isPresent()) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(new ErrorResponse("Вы уже авторизованы. Выйдите из системы для входа под другим аккаунтом"))
+                    .build();
+        }
+
         if (payload == null || payload.getUsername() == null || payload.getPassword() == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ErrorResponse("Введите логин и пароль"))

@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.sshubuntu'
-version = '1.0.1'
+version = '1.0.2'
 
 def nexusUsername = project.findProperty('NEXUS_USERNAME')
 def nexusPassword = project.findProperty('NEXUS_PASSWORD')

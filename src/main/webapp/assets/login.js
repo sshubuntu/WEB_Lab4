@@ -22,6 +22,21 @@ createApp({
     const successMessage = ref('');
     const loading = ref(false);
 
+    const checkAuth = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/auth/me`, {
+          method: 'GET',
+          credentials: 'include'
+        });
+        if (res.ok) {
+          window.location.href = 'app.html';
+        }
+      } catch (err) {
+      }
+    };
+
+    checkAuth();
+
     const validateLogin = () => {
       const problems = [];
       if (!username.value.trim()) problems.push('Введите имя пользователя');
